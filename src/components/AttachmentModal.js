@@ -138,18 +138,24 @@ const AttachmentModal = ({ closeModal, visible, currentUser, thread, setTransfer
 						<TouchableWithoutFeedback >
 							<View style={styles.innerModalViewHeightWidth}>
 								<View style={styles.modalItems}>
-									<View style={styles.viewItem} onPress={handleDocument}>
-										<IconButton icon='file-document-outline' size={36} color='#6646ee' />
-										<Text>Documents</Text>
-									</View>
-									<View style={styles.viewItem} onPress={handleCamera}>
-										<IconButton  icon='camera-outline' size={36} color='#6646ee' />
-										<Text>Camera</Text>
-									</View>
-									<View style={styles.viewItem} onPress={handleGallery}>
-										<IconButton  icon='contacts' size={36} color='#6646ee' />
-										<Text>Gallery</Text>
-									</View>
+									<TouchableWithoutFeedback onPress={handleDocument}>
+										<View style={styles.viewItem} >
+											<IconButton  icon='file-document-outline' size={36} color='#6646ee' />
+											<Text>Documents</Text>
+										</View>
+									</TouchableWithoutFeedback>
+									<TouchableWithoutFeedback onPress={handleCamera}>
+										<View style={styles.viewItem} >
+											<IconButton  icon='camera-outline' size={36} color='#6646ee' />
+											<Text>Camera</Text>
+										</View>
+									</TouchableWithoutFeedback>
+									<TouchableWithoutFeedback onPress={handleGallery}>
+										<View style={styles.viewItem} >
+											<IconButton  icon='contacts' size={36} color='#6646ee' />
+											<Text>Gallery</Text>
+										</View>
+									</TouchableWithoutFeedback>
 								</View>
 							</View>
 						</TouchableWithoutFeedback>
