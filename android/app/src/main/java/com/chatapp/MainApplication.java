@@ -4,17 +4,28 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
+import com.rnfs.RNFSPackage;
+import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;
+import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
+import io.invertase.firebase.storage.ReactNativeFirebaseStoragePackage;
+import io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage;
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
+import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
-//import com.facebook.react.shell.MainReactPackage;
+import com.facebook.react.shell.MainReactPackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
 
-//import java.util.Arrays;
+import java.util.Arrays;
 import java.util.List;
-//import com.rt2zz.reactnativecontacts.ReactNativeContacts;
+import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -27,11 +38,21 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
-          @SuppressWarnings("UnnecessaryLocalVariable")
-          List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
-          return packages;
+            return Arrays.<ReactPackage>asList(
+                    new MainReactPackage(),
+            new SvgPackage(),
+            new RNFSPackage(),
+                    new ReactNativeFirebaseAuthPackage(),
+                    new ReactNativeFirebaseAppPackage(),
+                    new ReactNativeFirebaseStoragePackage(),
+                    new ReactNativeFirebaseFirestorePackage(),
+                    new SafeAreaContextPackage(),
+                    new DocumentPickerPackage(),
+                    new ImagePickerPackage(),
+                    new RNGestureHandlerPackage(),
+                    new RNFileViewerPackage(),
+                    new ReactNativeContacts()
+            );
         }
 
         @Override

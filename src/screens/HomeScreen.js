@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Text, Button, ScrollView, PermissionsAndroid } from 'react-native';
+import { Image,View, StyleSheet, FlatList, TouchableOpacity, Text, Button, ScrollView, PermissionsAndroid } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { IconButton } from 'react-native-paper';
+import Contacts from 'react-native-contacts';
 
 import Loading from '../components/Loading';
 import useStatsBar from '../utils/useStatusBar';
 import CustomImagePicker from '../components/ImagePicker';
+import CircularProgressBar from '../components/circularProgressBar';
+import FileViewer from 'react-native-file-viewer';
+import { downloadFile} from '../components/downloadDoc';
+import { grantReadWritePermission } from '../helpers/readAndWriteAccess';
+import storage from '@react-native-firebase/storage';
 
 export default function HomeScreen({ navigation }) {
   useStatsBar('light-content');
@@ -18,29 +24,25 @@ export default function HomeScreen({ navigation }) {
    * Fetch threads from Firestore
    */
 
-  const requestCameraPermission = async () => {
-		try {
-			const granted = await PermissionsAndroid.request(
-				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-				{
-					title: "Cool Photo App Camera Permission",
-					message:
-						"Cool Photo App needs access to your camera " +
-						"so you can take awesome pictures.",
-					buttonNeutral: "Ask Me Later",
-					buttonNegative: "Cancel",
-					buttonPositive: "OK"
-				}
-			);
-			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-				console.log("You can use the camera");
-			} else {
-				console.log("Camera permission denied");
-			}
-		} catch (err) {
-			console.warn(err);
-		}
-  };
+  const checkContact = () => {
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+      {
+        'title': 'Contacts',
+        'message': 'This app would like to view your contacts.',
+        'buttonPositive': 'Please accept bare mortal'
+      }
+    ).then(() => {
+      Contacts.getAll((err, contacts) => {
+        if (err === 'denied'){
+          // error
+        } else {
+          // contacts returned in Array
+          console.log('contacts data', contacts);
+        }
+      })
+    })
+  }
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -54,7 +56,9 @@ export default function HomeScreen({ navigation }) {
             name: '',
 
             latestMessage: {
-              text: ''
+              text: '',
+              image: '',
+              document: ''
             },
             ...documentSnapshot.data()
           };
@@ -66,7 +70,7 @@ export default function HomeScreen({ navigation }) {
           setLoading(false);
         }
       });
-
+      
     /**
      * unsubscribe listener
      */
@@ -90,7 +94,6 @@ export default function HomeScreen({ navigation }) {
       )
     }
     else if(message.document){
-      console.log('document', message.document);
       return(
         <View>
           <IconButton icon='google-photos' size={20} color='#6646ee' />
@@ -99,6 +102,20 @@ export default function HomeScreen({ navigation }) {
       )
     }
 
+
+  }
+
+  function fileOpen(){
+    grantReadWritePermission()
+    .then((response) => {
+      console.log('response', response)
+      downloadFile(
+        true,
+        'https://firebasestorage.googleapis.com/v0/b/chatapp-b45c9.appspot.com/o/documents%2FPrashant%20resume.pdf?alt=media&token=22ba0600-c672-4527-8e35-b3f4cc678b29',
+        true
+      )
+      .then(()=> console.log('file download success'));
+    })
 
   }
 
@@ -125,7 +142,13 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           )}
         />
-        <Button title='testing' onPress={requestCameraPermission} />
+        <Button title='testing' onPress={checkContact} />
+        <Image
+          source={{uri:'data:image/jpeg;base64,gs://chatapp-b45c9.appspot.com/documents/sample.pdf'}}
+          // source={{uri: 'https://firebasestorage.googleapis.com/v0/b/chatapp-b45c9.appspot.com/o/documents%2Fsample.pdf?alt=media&token=9e697c39-23fa-4232-a3dd-c851fb287a95'}}
+          style={{ width: 250, height: 250 }}
+        />
+        <Button title='testing' onPress={fileOpen} />
       </View>
     </ScrollView>
   );
