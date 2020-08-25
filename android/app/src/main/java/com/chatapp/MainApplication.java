@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
 import com.rnfs.RNFSPackage;
 import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;
 import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
@@ -24,7 +25,7 @@ import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
 
 import java.util.Arrays;
 import java.util.List;
-//import com.rt2zz.reactnativecontacts.ReactNativeContacts;
+import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -39,6 +40,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new SvgPackage(),
             new RNFSPackage(),
                     new ReactNativeFirebaseAuthPackage(),
                     new ReactNativeFirebaseAppPackage(),
@@ -48,7 +50,8 @@ public class MainApplication extends Application implements ReactApplication {
                     new DocumentPickerPackage(),
                     new ImagePickerPackage(),
                     new RNGestureHandlerPackage(),
-                    new RNFileViewerPackage()
+                    new RNFileViewerPackage(),
+                    new ReactNativeContacts()
             );
         }
 

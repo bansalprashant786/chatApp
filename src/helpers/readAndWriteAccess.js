@@ -1,4 +1,8 @@
 import { Platform, PermissionsAndroid } from 'react-native';
+import RNFS from 'react-native-fs';
+
+import { DIR_PATH } from '../components/downloadDoc';
+
 
 /**
  * Grant read and write permission
@@ -20,14 +24,30 @@ export function grantReadWritePermission(callback) {
         granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] ===
           PermissionsAndroid.RESULTS.GRANTED
       ) {
-				console.log('permisiion granted');
-				resolve(true);
-			}
-			else{
-				reject(true)
-			}
+        RNFS.mkdir(`${RNFS.ExternalStorageDirectoryPath}${DIR_PATH}`)
+          .then(res => {
+            resolve(true);
+            return;
+          })
+          .catch(err => {
+            reject();
+            return;
+          });
+      }
+    } else if (Platform.OS === 'ios') {
+      RNFS.mkdir(`${RNFS.DocumentDirectoryPath}${DIR_PATH}`, {
+        NSURLIsExcludedFromBackupKey: true,
+      })
+        .then(res => {
+          resolve(true);
+          return;
+        })
+        .catch(() => {
+          reject();
+          return;
+        });
     }
-
+    // resolve(true);
     return;
   });
 }

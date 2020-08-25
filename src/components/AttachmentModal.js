@@ -11,7 +11,8 @@ import { IconButton } from 'react-native-paper';
 import ImagePicker from 'react-native-image-picker';
 
 import DocumentPicker from 'react-native-document-picker';
-
+import { grantCameraPermission } from '../helpers/cameraAccess';
+import { grantReadWritePermission } from '../helpers/readAndWriteAccess';
 import CommonModal from './Modal';
 import ImageModal from './ImageModal';
 import DocumentModal from './DocumentModal';
@@ -20,7 +21,7 @@ const dimensions = Dimensions.get('window');
 const width = dimensions.width;
 const height = dimensions.height;
 
-const AttachmentModal = ({ closeModal, visible, currentUser, thread}) => {
+const AttachmentModal = ({ closeModal, visible, currentUser, thread, setTransferred, setUploading}) => {
 
   const [imageSource, setImageSource] = useState({})
   const [imageModal, setImageModal] = useState(false)
@@ -31,7 +32,6 @@ const AttachmentModal = ({ closeModal, visible, currentUser, thread}) => {
 	}
 
 	function handlePicker(response){
-		console.log('response', response);
 		if (response.didCancel) {
 			console.log('User cancelled image picker');
 		} else if (response.error) {
@@ -57,29 +57,35 @@ const AttachmentModal = ({ closeModal, visible, currentUser, thread}) => {
       }
 		};
 
-    ImagePicker.launchCamera(options, (response) => {
-			console.log('camera response', response);
-			handlePicker(response)
-    });
+		grantCameraPermission()
+		.then(() => {
+			ImagePicker.launchCamera(options, (response) => {
+				handlePicker(response)
+			});
+		})
 	}
 
 
 	async function handleDocument() {
-		closeModal(true);
-		DocumentPicker.pick({
-			type: [DocumentPicker.types.allFiles],
-		})
-		.then(res => {
-			setDocumentModal(true);
-			setDocumentSource(res)
-		})
-		.catch(err => {
-			if (DocumentPicker.isCancel(err)) {
-				// User cancelled the picker, exit any dialogs or menus and move on
-			} else {
-				throw err;
-			}
+		grantReadWritePermission()
+		.then(() => {
+			closeModal(true);
+			DocumentPicker.pick({
+				type: [DocumentPicker.types.allFiles],
+			})
+			.then(res => {
+				setDocumentModal(true);
+				setDocumentSource(res)
+			})
+			.catch(err => {
+				if (DocumentPicker.isCancel(err)) {
+					// User cancelled the picker, exit any dialogs or menus and move on
+				} else {
+					throw err;
+				}
+			});
 		});
+
 	}
 
 
@@ -104,11 +110,15 @@ const AttachmentModal = ({ closeModal, visible, currentUser, thread}) => {
       }
 		};
 
-    ImagePicker.launchImageLibrary(options, (response) => {
-			// Same code as in above section!
-			console.log('gallery response', response);
-			handlePicker(response)
-    });
+		grantCameraPermission()
+		.then(() => {
+			ImagePicker.launchImageLibrary(options, (response) => {
+				// Same code as in above section!
+				handlePicker(response)
+			});
+		})
+
+
   }
 
 	function closeImageModal(){
@@ -128,16 +138,16 @@ const AttachmentModal = ({ closeModal, visible, currentUser, thread}) => {
 						<TouchableWithoutFeedback >
 							<View style={styles.innerModalViewHeightWidth}>
 								<View style={styles.modalItems}>
-									<View style={styles.viewItem}>
-										<IconButton onPress={handleDocument} icon='file-document-outline' size={36} color='#6646ee' />
+									<View style={styles.viewItem} onPress={handleDocument}>
+										<IconButton icon='file-document-outline' size={36} color='#6646ee' />
 										<Text>Documents</Text>
 									</View>
-									<View style={styles.viewItem}>
-										<IconButton onPress={handleCamera} icon='camera-outline' size={36} color='#6646ee' />
+									<View style={styles.viewItem} onPress={handleCamera}>
+										<IconButton  icon='camera-outline' size={36} color='#6646ee' />
 										<Text>Camera</Text>
 									</View>
-									<View style={styles.viewItem}>
-										<IconButton onPress={handleGallery} icon='contacts' size={36} color='#6646ee' />
+									<View style={styles.viewItem} onPress={handleGallery}>
+										<IconButton  icon='contacts' size={36} color='#6646ee' />
 										<Text>Gallery</Text>
 									</View>
 								</View>
@@ -152,6 +162,8 @@ const AttachmentModal = ({ closeModal, visible, currentUser, thread}) => {
 				imageSource={imageSource}
 				currentUser={currentUser}
 				thread={thread}
+				setTransferred={setTransferred}
+				setUploading={setUploading}
 			/>
 			<DocumentModal
 				closeModal={closeDocumentModal}
@@ -159,6 +171,8 @@ const AttachmentModal = ({ closeModal, visible, currentUser, thread}) => {
 				currentUser={currentUser}
 				thread={thread}
 				documentSource={documentSource}
+				setTransferred={setTransferred}
+				setUploading={setUploading}
 			/>
 
 		</>

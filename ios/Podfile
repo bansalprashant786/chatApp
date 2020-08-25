@@ -26,6 +26,10 @@ target 'ChatApp' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'react-native-doc-preview', :path => '../node_modules/react-native-doc-preview'
+
   target 'ChatAppTests' do
     inherit! :complete
     # Pods for testing

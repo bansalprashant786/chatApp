@@ -26,6 +26,7 @@ export default function AddRoomScreen({ navigation }) {
           }
         })
         .then(docRef => {
+          console.log('ejnwkjhk');
           docRef.collection('MESSAGES').add({
             text: `You have joined the room ${roomName}.`,
             createdAt: new Date().getTime(),

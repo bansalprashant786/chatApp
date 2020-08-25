@@ -4,15 +4,21 @@ import {
   Bubble,
   Send,
   SystemMessage,
+  MessageText
 } from 'react-native-gifted-chat';
 import {
   ActivityIndicator,
   View,
   StyleSheet,
   Dimensions,
+  Text,
+  Image,
+  ImageBackground
 } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
+
+import CircularProgressBar from '../components/circularProgressBar';
 
 import useStatsBar from '../utils/useStatusBar';
 import { AuthContext } from '../navigation/AuthProvider';
@@ -31,8 +37,24 @@ export default function RoomScreen({ route }) {
   const { thread } = route.params;
   const { user } = useContext(AuthContext);
   const currentUser = user.toJSON();
+  const [uploading, setUploading] = useState({});
+  const [transferred, setTransferred] = useState({});
+  function handleUpload(id, value){
+    setUploading({
+      ...uploading,
+      [id]: value
+    })
+  }
+
+  function handleTransferred(id, value){
+    setTransferred({
+      ...transferred,
+      [id]: value
+    })
+  }
 
   function sendMessages(messages){
+    console.log('messages in room screen', messages);
     handleSend(messages, thread, currentUser);
   }
 
@@ -43,6 +65,7 @@ export default function RoomScreen({ route }) {
       .collection('MESSAGES')
       .orderBy('createdAt', 'desc')
       .onSnapshot(querySnapshot => {
+        console.log(querySnapshot.docs);
         const messages = querySnapshot.docs.map(doc => {
           const firebaseData = doc.data();
 
@@ -90,24 +113,13 @@ export default function RoomScreen({ route }) {
     );
   }
 
-  // function renderMessage(props) {
-  //   const {
-  //     currentMessage: { text: currText },
-  //   } = props
+  function renderMessage(props) {
+    const { currentMessage} = props
+    if(currentMessage.text){
+      return<MessageText {...props} currentMessage={{text: currentMessage.text} } />
+    }
 
-  //   let messageTextStyle
-
-  //   // Make "pure emoji" messages much bigger than plain text.
-  //   if (currText && emojiUtils.isPureEmojiString(currText)) {
-  //     messageTextStyle = {
-  //       fontSize: 28,
-  //       // Emoji get clipped if lineHeight isn't increased; make it consistent across platforms.
-  //       lineHeight: Platform.OS === 'android' ? 34 : 30,
-  //     }
-  //   }
-
-  //   return <SlackMessage {...props} messageTextStyle={messageTextStyle} />
-  // }
+  }
 
   function renderLoading() {
     return (
@@ -165,6 +177,60 @@ export default function RoomScreen({ route }) {
     );
   }
 
+  function renderCustomView(props){
+    if(props.currentMessage.document){
+      return(
+        <View>
+          <Text>Document message</Text>
+          {
+            uploading[props.currentMessage.uploadId]?
+              <View>
+                <CircularProgressBar size={30} width={3} percentage={transferred[props.currentMessage.uploadId] || 0} />
+              </View>
+              : null
+          }
+        </View>
+      )
+    }
+  }
+
+  function renderMessageImage(props){
+    const { currentMessage } = props;
+    return(
+
+      <View
+      // style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20}}
+      >
+        <ImageBackground
+          source={{uri: currentMessage.image}}
+          style={{
+            width: 200,
+            height: 200,
+            borderRadius: 13,
+            margin: 3,
+            resizeMode: 'cover',
+          }}
+        >
+          {
+            uploading[currentMessage.uploadId]?
+              <View
+              style={
+                {
+                  flex:1,
+                  justifyContent: 'flex-end',
+                  marginTop: 8,
+                }
+              }
+            >
+              <CircularProgressBar size={30} width={3} percentage={transferred[currentMessage.uploadId]|| 0} />
+            </View>
+            : null
+          }
+        </ImageBackground>
+      </View>
+    )
+  }
+
   return (
     <>
 
@@ -176,17 +242,30 @@ export default function RoomScreen({ route }) {
       alwaysShowSend
       showUserAvatar
       scrollToBottom
+      imageProps={{imageStyle: {   flex: 1,
+            width:100,
+            height:100,}}}
       renderBubble={renderBubble}
       renderLoading={renderLoading}
       renderSend={renderSend}
+      renderCustomView={renderCustomView}
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
       renderActions={renderActions}
+      renderMessageImage={renderMessageImage}
+      // renderMessage={renderMessage}
       // onPressActionButton={()=> console.log('action button call')}
       // renderMessage={renderMessage}
     />
 
-    <AttachmentModal currentUser={currentUser} thread={thread} closeModal={closeAttachmentModal} visible={attachmentModal} />
+    <AttachmentModal
+      currentUser={currentUser}
+      thread={thread}
+      closeModal={closeAttachmentModal}
+      visible={attachmentModal}
+      setTransferred={handleTransferred}
+      setUploading={handleUpload}
+    />
 
     </>
   );
