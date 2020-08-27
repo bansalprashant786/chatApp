@@ -37,7 +37,8 @@ const ImageModal = ({ closeModal, visible, imageSource, currentUser, thread, set
 		let documentId = await handleSend(message, thread, currentUser);
 		closeModal(true);
 		console.log('after send message', documentId);
-		const uniqueFileName = generateUniqueFileName('Image')
+		const extension = fileName.split('.')[1];
+		const uniqueFileName = generateUniqueFileName('Image', extension);
 		setUploading(uploadId, true);
 		const data = await RNFS.readFile(uploadUri, 'base64')
 		storage()

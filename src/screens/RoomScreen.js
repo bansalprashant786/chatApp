@@ -24,6 +24,7 @@ import useStatsBar from '../utils/useStatusBar';
 import { AuthContext } from '../navigation/AuthProvider';
 import AttachmentModal from '../components/AttachmentModal';
 import { handleSend } from '../helpers/firebaseSend';
+import { getFileNameFromUrl } from '../helpers/utils';
 
 const dimensions = Dimensions.get('window');
 const width = dimensions.width;
@@ -181,7 +182,7 @@ export default function RoomScreen({ route }) {
     if(props.currentMessage.document){
       return(
         <View>
-          <Text>Document message</Text>
+          <Text>{getFileNameFromUrl(props.currentMessage.document)}</Text>
           {
             uploading[props.currentMessage.uploadId]?
               <View>

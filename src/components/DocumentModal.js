@@ -40,7 +40,8 @@ const DocumentModal = ({ closeModal, visible, documentSource, thread, currentUse
 		setUploading(uploadId, true);
 		console.log('comes in first part');
 		const data = await RNFS.readFile(uploadUri, 'base64')
-		const uniqueFileName = generateUniqueFileName('Document')
+		const extension = name.split('.')[1];
+		const uniqueFileName = generateUniqueFileName('Document', extension);
 		console.log('comes in second part', uniqueFileName);
 
 		const task = storage()

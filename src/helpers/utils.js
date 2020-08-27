@@ -6,3 +6,10 @@ export const getRandomString = (length) => {
   }
   return text;
 };
+
+export function getFileNameFromUrl(url){
+  let newUrl = url.split(/[?#]/)[0];
+  const decodedUrl = decodeURIComponent(newUrl);
+  const fileName = decodedUrl.substring(decodedUrl.lastIndexOf('/')+1);
+  return fileName;
+}

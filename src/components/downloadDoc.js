@@ -1,16 +1,10 @@
 import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import FileViewer from 'react-native-file-viewer';
-
+import { getFileNameFromUrl } from '../helpers/utils';
 export const DIR_PATH = '/chatApp/document';
 
 let jobId = -1;
-function getToFileUrl(url){
-  let newUrl = url.split(/[?#]/)[0];
-  const decodedUrl = decodeURIComponent(newUrl);
-  const fileName = decodedUrl.substring(decodedUrl.lastIndexOf('/')+1);
-  return fileName;
-}
 
 export function getAbsolutePath() {
   return `${
@@ -62,7 +56,7 @@ export async function downloadDocFile(
   changeProgress
 ) {
   return new Promise(async function(resolve, reject) {
-    const toFileUrl = getToFileUrl(url);
+    const toFileUrl = getFileNameFromUrl(url);
     const downloadDest = `${getAbsolutePath()}${DIR_PATH}/${toFileUrl}`;
     console.log('downloadDest', downloadDest);
     console.log('downloadDest url', url);
@@ -124,7 +118,7 @@ export function downloadFile(
   changeProgress
 ) {
   return new Promise(async function(resolve, reject) {
-    const toFileUrl = getToFileUrl(url);
+    const toFileUrl = getFileNameFromUrl(url);
     const downloadDest = `${getAbsolutePath()}${DIR_PATH}/${toFileUrl}`;
     console.log('downloadDest', downloadDest);
     console.log('downloadDest url', url);
