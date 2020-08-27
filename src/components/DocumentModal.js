@@ -45,7 +45,7 @@ const DocumentModal = ({ closeModal, visible, documentSource, thread, currentUse
 
 		const task = storage()
 		.ref(`documents/${uniqueFileName}`)
-		.putFile(uploadUri);
+		.putString(data, 'base64');
 		console.log('comes in third part');
 		task.on('state_changed', snapshot => {
 			setTransferred(uploadId, Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100)

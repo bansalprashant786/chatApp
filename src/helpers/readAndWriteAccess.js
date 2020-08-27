@@ -34,6 +34,10 @@ export function grantReadWritePermission(callback) {
             return;
           });
       }
+      else {
+        reject();
+        return;
+      }
     } else if (Platform.OS === 'ios') {
       RNFS.mkdir(`${RNFS.DocumentDirectoryPath}${DIR_PATH}`, {
         NSURLIsExcludedFromBackupKey: true,
