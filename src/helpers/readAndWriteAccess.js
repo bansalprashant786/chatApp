@@ -24,9 +24,13 @@ export function grantReadWritePermission(callback) {
         granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] ===
           PermissionsAndroid.RESULTS.GRANTED
       ) {
-        RNFS.mkdir(`${RNFS.ExternalStorageDirectoryPath}${DIR_PATH}`)
+        RNFS.mkdir(`${RNFS.ExternalStorageDirectoryPath}${DIR_PATH}/documents`)
           .then(res => {
-            resolve(true);
+            RNFS.mkdir(`${RNFS.ExternalStorageDirectoryPath}${DIR_PATH}/images`).then(
+              res => {
+                resolve(true);
+              }
+            )
             return;
           })
           .catch(err => {

@@ -70,7 +70,7 @@ export default function HomeScreen({ navigation }) {
           setLoading(false);
         }
       });
-      
+
     /**
      * unsubscribe listener
      */
@@ -111,8 +111,10 @@ export default function HomeScreen({ navigation }) {
       console.log('response', response)
       downloadFile(
         true,
-        'https://firebasestorage.googleapis.com/v0/b/chatapp-b45c9.appspot.com/o/documents%2FPrashant%20resume.pdf?alt=media&token=22ba0600-c672-4527-8e35-b3f4cc678b29',
-        true
+        'https://firebasestorage.googleapis.com/v0/b/chatapp-b45c9.appspot.com/o/documents%2FPrashant%20resume.pdf?alt=media&token=a16f5639-c83b-4343-98fa-7ae2a7d8f4c6',
+        true,
+        false,
+        'documents'
       )
       .then(()=> console.log('file download success'));
     })

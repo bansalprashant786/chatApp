@@ -21,7 +21,7 @@ const CommonModal = (props) => {
 		<Modal
 			{...props.customProps}
 			accessibilityLabel="CommonModal_286_1"
-			transparent
+			// transparent
 			onRequestClose={closeModal}
 			supportedOrientations={supportedOrientations}
 		>
@@ -33,3 +33,7 @@ const CommonModal = (props) => {
 
 
 export default CommonModal;
+
+CommonModal.defaultProps = {
+	transparent: true
+}

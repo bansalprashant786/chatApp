@@ -13,7 +13,9 @@ import {
   Dimensions,
   Text,
   Image,
-  ImageBackground
+  ImageBackground,
+  Button,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
@@ -24,7 +26,8 @@ import useStatsBar from '../utils/useStatusBar';
 import { AuthContext } from '../navigation/AuthProvider';
 import AttachmentModal from '../components/AttachmentModal';
 import { handleSend } from '../helpers/firebaseSend';
-import { getFileNameFromUrl } from '../helpers/utils';
+import { getFileNameFromUrl, downloadFileWithPermission } from '../helpers/utils';
+import ImageViewModal from '../components/ImageViewModal';
 
 const dimensions = Dimensions.get('window');
 const width = dimensions.width;
@@ -40,6 +43,11 @@ export default function RoomScreen({ route }) {
   const currentUser = user.toJSON();
   const [uploading, setUploading] = useState({});
   const [transferred, setTransferred] = useState({});
+
+  const [imageSrc, setImageSrc] = useState('');
+  const [imageViewModal, setImageViewModal] = useState(false);
+  const [imageDownloadProgress, setImageDownloadProgress] = useState(0);
+  const [documentDownloadProgress, setDocumentDownloadProgress] = useState(0)
   function handleUpload(id, value){
     setUploading({
       ...uploading,
@@ -114,6 +122,16 @@ export default function RoomScreen({ route }) {
     );
   }
 
+
+  function handleImageViewModal(src){
+    setImageSrc(src);
+    setImageViewModal(true);
+  }
+
+  function closeImageViewModal(){
+    setImageViewModal(false);
+  }
+
   function renderMessage(props) {
     const { currentMessage} = props
     if(currentMessage.text){
@@ -178,27 +196,58 @@ export default function RoomScreen({ route }) {
     );
   }
 
+  function changeDocumentProgress(per){
+    console.log('percentage in roomscreen', per);
+    setDocumentDownloadProgress(per);
+    console.log('percentage in roomscreen document', documentDownloadProgress);
+
+  }
+
+  function handleDownloadDocument(message){
+
+    downloadFileWithPermission(message.document, 'documents', changeDocumentProgress);
+  }
+
   function renderCustomView(props){
     if(props.currentMessage.document){
       return(
         <View>
           <Text>{getFileNameFromUrl(props.currentMessage.document)}</Text>
           {
-            uploading[props.currentMessage.uploadId]?
+            uploading[props.currentMessage.uploadId] || documentDownloadProgress?
               <View>
-                <CircularProgressBar size={30} width={3} percentage={transferred[props.currentMessage.uploadId] || 0} />
+                <CircularProgressBar size={30} width={3} percentage={transferred[props.currentMessage.uploadId]|| documentDownloadProgress || 0} />
               </View>
               : null
           }
+          <View>
+            <IconButton
+              icon='download'
+              animated={true}
+              size={30} color='#fff'
+
+              onPress={() => handleDownloadDocument(props.currentMessage)}
+            />
+          </View>
         </View>
       )
     }
   }
 
+  function changeProgress(per){
+    console.log('percentage in roomscreen', per);
+    setImageDownloadProgress(per);
+  }
+
+  function handleDownloadImage(message){
+
+    downloadFileWithPermission(message.image, 'images', changeProgress);
+  }
+
   function renderMessageImage(props){
     const { currentMessage } = props;
     return(
-
+      <TouchableWithoutFeedback onPress={() => handleImageViewModal(currentMessage.image)}>
       <View
       // style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20}}
       >
@@ -212,8 +261,18 @@ export default function RoomScreen({ route }) {
             resizeMode: 'cover',
           }}
         >
+        <View style={{ top: 0, right: 0, position: 'absolute', margin: 0}}>
+        <IconButton
+          icon='download'
+          animated={true}
+          size={30} color='#fff'
+
+          onPress={() => handleDownloadImage(currentMessage)}
+        />
+        </View>
+
           {
-            uploading[currentMessage.uploadId]?
+            uploading[currentMessage.uploadId] || imageDownloadProgress ?
               <View
               style={
                 {
@@ -223,12 +282,13 @@ export default function RoomScreen({ route }) {
                 }
               }
             >
-              <CircularProgressBar size={30} width={3} percentage={transferred[currentMessage.uploadId]|| 0} />
+              <CircularProgressBar size={30} width={3} percentage={transferred[currentMessage.uploadId]|| imageDownloadProgress || 0} />
             </View>
             : null
           }
         </ImageBackground>
       </View>
+      </TouchableWithoutFeedback>
     )
   }
 
@@ -267,7 +327,11 @@ export default function RoomScreen({ route }) {
       setTransferred={handleTransferred}
       setUploading={handleUpload}
     />
-
+    <ImageViewModal
+      imageSrc={imageSrc}
+      visible={imageViewModal}
+      closeModal={closeImageViewModal}
+    />
     </>
   );
 }

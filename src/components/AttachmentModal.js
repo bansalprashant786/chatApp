@@ -152,7 +152,7 @@ const AttachmentModal = ({ closeModal, visible, currentUser, thread, setTransfer
 									</TouchableWithoutFeedback>
 									<TouchableWithoutFeedback onPress={handleGallery}>
 										<View style={styles.viewItem} >
-											<IconButton  icon='contacts' size={36} color='#6646ee' />
+											<IconButton  icon='folder-image' size={36} color='#6646ee' />
 											<Text>Gallery</Text>
 										</View>
 									</TouchableWithoutFeedback>

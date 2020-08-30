@@ -2,7 +2,7 @@ import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import FileViewer from 'react-native-file-viewer';
 import { getFileNameFromUrl } from '../helpers/utils';
-export const DIR_PATH = '/chatApp/document';
+export const DIR_PATH = '/chatApp';
 
 let jobId = -1;
 
@@ -53,15 +53,17 @@ export async function downloadDocFile(
   background,
   url,
   openDownloadedFile,
-  changeProgress
+  changeProgress,
+  path
 ) {
   return new Promise(async function(resolve, reject) {
+    const dir_path = `${DIR_PATH}/${path}`;
     const toFileUrl = getFileNameFromUrl(url);
-    const downloadDest = `${getAbsolutePath()}${DIR_PATH}/${toFileUrl}`;
+    const downloadDest = `${getAbsolutePath()}${dir_path}/${toFileUrl}`;
     console.log('downloadDest', downloadDest);
     console.log('downloadDest url', url);
 
-    if (await isFileExist(DIR_PATH, toFileUrl)) {
+    if (await isFileExist(dir_path, toFileUrl)) {
       console.log('downloadDest openDownloadedFile', openDownloadedFile);
       if (openDownloadedFile) {
         openFile(downloadDest);
@@ -115,14 +117,16 @@ export function downloadFile(
   background,
   url,
   openDownloadedFile,
-  changeProgress
+  changeProgress,
+  path
 ) {
   return new Promise(async function(resolve, reject) {
+    const dir_path = `${DIR_PATH}/${path}`;
     const toFileUrl = getFileNameFromUrl(url);
-    const downloadDest = `${getAbsolutePath()}${DIR_PATH}/${toFileUrl}`;
+    const downloadDest = `${getAbsolutePath()}${dir_path}/${toFileUrl}`;
     console.log('downloadDest', downloadDest);
     console.log('downloadDest url', url);
-    if (await isFileExist(DIR_PATH, toFileUrl)) {
+    if (await isFileExist(dir_path, toFileUrl)) {
       console.log('downloadDest openDownloadedFile', openDownloadedFile);
       if (openDownloadedFile) {
         openFile(downloadDest);
@@ -158,6 +162,10 @@ export function downloadFile(
 
           if (openDownloadedFile) {
             openFile(downloadDest);
+          }
+          if (changeProgress) {
+
+            changeProgress(0);
           }
           resolve();
           jobId = -1;
