@@ -1,4 +1,4 @@
-apply plugin: "com.android.application"
+apply plugin: 'com.android.application'
 
 import com.android.build.OutputFile
 
@@ -82,7 +82,6 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -185,6 +184,8 @@ android {
 dependencies {
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-fs')
+    implementation project(':@react-native-firebase_database')
+    implementation project(':@react-native-firebase_app')
     implementation project(':react-native-file-viewer')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-contacts')
@@ -193,8 +194,9 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    implementation 'com.google.firebase:firebase-storage:19.1.1'
-
+    implementation "com.google.android.gms:play-services-base:17.4.0"
+    implementation 'com.google.firebase:firebase-storage:19.2.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.2'
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

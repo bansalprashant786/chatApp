@@ -6,7 +6,7 @@ import { IconButton } from 'react-native-paper';
 import Contacts from 'react-native-contacts';
 
 import Loading from '../components/Loading';
-import useStatsBar from '../utils/useStatusBar';
+// import useStatsBar from '../utils/useStatusBar';
 import CustomImagePicker from '../components/ImagePicker';
 import CircularProgressBar from '../components/circularProgressBar';
 import FileViewer from 'react-native-file-viewer';
@@ -15,7 +15,7 @@ import { grantReadWritePermission } from '../helpers/readAndWriteAccess';
 import storage from '@react-native-firebase/storage';
 
 export default function HomeScreen({ navigation }) {
-  useStatsBar('light-content');
+  // useStatsBar('light-content');
 
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +49,7 @@ export default function HomeScreen({ navigation }) {
       .collection('THREADS')
       .orderBy('latestMessage.createdAt', 'desc')
       .onSnapshot(querySnapshot => {
-        const threads = querySnapshot.docs.map(documentSnapshot => {
+        const threads = querySnapshot && querySnapshot.docs.map(documentSnapshot => {
           return {
             _id: documentSnapshot.id,
             // give defaults

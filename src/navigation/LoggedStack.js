@@ -1,37 +1,17 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import SignupScreen from '../screens/SignupScreen';
-import LoginScreen from '../screens/LoginScreen';
-import Register from '../screens/registerWithMobile';
-import Verify from '../screens/verify';
-import Profile from '../screens/Profile';
 import Conversation from '../screens/conversation';
 import Contact from '../screens/Contact';
 import Chat from '../screens/Chat';
 import Header from '../components/header';
 import ChatHeader from '../components/chatHeader';
+import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator();
 
-export default function AuthStack() {
+export default function LoggedStack() {
   return (
-    <Stack.Navigator initialRouteName='Register' headerMode='screen'>
-      <Stack.Screen name='Login' component={LoginScreen} />
-      <Stack.Screen name='Signup' component={SignupScreen} />
-      <Stack.Screen
-        name='Register'
-        component={Register}
-        options={({ navigation }) => ({
-          header: ()=> null
-        })}
-      />
-      <Stack.Screen
-        name='Verify'
-        component={Verify}
-        options={({ navigation }) => ({
-          header: ()=> null
-        })}
-      />
+    <Stack.Navigator initialRouteName='Conversation' headerMode='screen'>
       <Stack.Screen
         name='Profile'
         component={Profile}
@@ -39,7 +19,7 @@ export default function AuthStack() {
           header: ()=> null
         })}
       />
-      <Stack.Screen
+			<Stack.Screen
         name='Conversation'
         component={Conversation}
         options={({ navigation }) => ({
@@ -65,7 +45,7 @@ export default function AuthStack() {
               nav={navigation}
               title={'Contacts'}
               back
-              absolute
+              // absolute
             />
           )
         })}

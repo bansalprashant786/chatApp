@@ -6,6 +6,7 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [confirm, setConfirm] = useState(null);
 
   return (
     <AuthContext.Provider
@@ -16,6 +17,30 @@ export const AuthProvider = ({ children }) => {
           try {
             await auth().signInWithEmailAndPassword(email, password);
           } catch (e) {
+            console.log(e);
+          }
+        },
+        loginWithMobile: async(phoneNumber) => {
+          try {
+            const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+            setConfirm(confirmation);
+            console.log('comes in login with mobile success');
+            return confirmation;
+          }catch (e) {
+            console.log('error in login with mobile',e);
+          }
+        },
+        verify: async(code) => {
+          try {
+            await confirm.confirm(code);
+          } catch (error) {
+            console.log('Invalid code.');
+          }
+        },
+        registerWithMobile: async(phoneNumber) => {
+          try {
+            await auth().signInWithPhoneNumber(phoneNumber);
+          }catch (e) {
             console.log(e);
           }
         },

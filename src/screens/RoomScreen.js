@@ -22,7 +22,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import CircularProgressBar from '../components/circularProgressBar';
 
-import useStatsBar from '../utils/useStatusBar';
+// import useStatsBar from '../utils/useStatusBar';
 import { AuthContext } from '../navigation/AuthProvider';
 import AttachmentModal from '../components/AttachmentModal';
 import { handleSend } from '../helpers/firebaseSend';
@@ -34,7 +34,7 @@ const width = dimensions.width;
 const height = dimensions.height;
 
 export default function RoomScreen({ route }) {
-  useStatsBar('light-content');
+  // useStatsBar('light-content');
 
   const [messages, setMessages] = useState([]);
   const [attachmentModal, setAttachmentModal] = useState(false)
@@ -43,7 +43,7 @@ export default function RoomScreen({ route }) {
   const currentUser = user.toJSON();
   const [uploading, setUploading] = useState({});
   const [transferred, setTransferred] = useState({});
-
+  console.log('userInfo', currentUser);
   const [imageSrc, setImageSrc] = useState('');
   const [imageViewModal, setImageViewModal] = useState(false);
   const [imageDownloadProgress, setImageDownloadProgress] = useState(0);

@@ -30,6 +30,10 @@ target 'ChatApp' do
 
   pod 'react-native-doc-preview', :path => '../node_modules/react-native-doc-preview'
 
+  pod 'RNFBDatabase', :path => '../node_modules/@react-native-firebase/database'
+
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'ChatAppTests' do
     inherit! :complete
     # Pods for testing

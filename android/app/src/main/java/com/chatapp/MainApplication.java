@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import io.invertase.firebase.database.ReactNativeFirebaseDatabasePackage;
 import com.horcrux.svg.SvgPackage;
 import com.rnfs.RNFSPackage;
 import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;
@@ -40,6 +42,8 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new AsyncStoragePackage(),
+            new ReactNativeFirebaseDatabasePackage(),
             new SvgPackage(),
             new RNFSPackage(),
                     new ReactNativeFirebaseAuthPackage(),
